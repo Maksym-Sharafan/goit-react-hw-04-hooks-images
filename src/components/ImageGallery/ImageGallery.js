@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 
 import ImageGalleryItem from '../ImageGalleryItem';
 import Button from '../Button';
@@ -27,8 +27,7 @@ export default function ImageGallery({ searchImages }) {
     setImages([]);
   };
 
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!query) {
       return;
     };
@@ -40,6 +39,10 @@ export default function ImageGallery({ searchImages }) {
       .then(response => {
         setImages(prev => [...prev, ...response.hits]);
         setStatus(Status.RESOLVED);
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
       })
       .catch(error => {
         setError(error);
@@ -48,14 +51,8 @@ export default function ImageGallery({ searchImages }) {
 
   }, [currentPage, searchImages, query]);
 
-  window.scrollTo({
-    top: document.documentElement.scrollHeight,
-    behavior: 'smooth',
-  });
-
   const onIncrementPage = () => {
     setCurrentPage(prev => prev + 1);
-
   };
 
   if (status === 'idle') {
